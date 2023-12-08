@@ -1,4 +1,5 @@
 #include "primitive.h"
+#include <assert.h>
 
 void drawLine(vec2 p1, vec2 p2, uint32_t color)
 {
@@ -289,4 +290,73 @@ void drawTriangleShaded(vec2 p1, uint32_t color1, vec2 p2, uint32_t color2, vec2
 			x1 += m1;
 		}		
 	}
+}
+
+polygon_t *newPolygon(int pointCount)
+{
+	assert(pointCount > 2);
+
+	polygon_t *polygon = malloc(sizeof(*polygon));
+	if (polygon == NULL)
+	{
+		return NULL;
+	}
+	
+	polygon->points = malloc(pointCount*sizeof(*polygon->points));
+	polygon->pointCount = pointCount;
+	if (polygon->points == NULL)
+	{
+		free(polygon);
+		return NULL;
+	}
+	
+	return polygon;
+}
+
+void deletePolygon(polygon_t *polygon)
+{
+	free(polygon->points);
+	free(polygon);
+}
+
+void drawPolygonFrame(const polygon_t *polygon, color_t color)
+{
+	for (int i = 0; i < polygon->pointCount - 1; i++)
+	{
+		drawLine(polygon->points[i], polygon->points[i + 1], color);
+	}
+	drawLine(polygon->points[polygon->pointCount - 1], polygon->points[0], color);
+}
+
+void drawPolygonMeshConvex(const polygon_t *polygon, color_t color)
+{
+	drawPolygonFrame(polygon, color);
+	vec2 pivot = polygon->points[0];
+	for (int i = 2; i < polygon->pointCount - 1; i++)
+	{
+		drawLine(pivot, polygon->points[i], color);
+	}
+}
+
+void drawPolygonMesh(const polygon_t *polygon, color_t color)
+{
+	// TODO
+	(void)polygon;
+	(void)color;
+}
+
+void drawPolygonFlatConvex(const polygon_t *polygon, color_t color)
+{
+	vec2 pivot = polygon->points[0];
+	for (int i = 2; i < polygon->pointCount; i++)
+	{
+		drawTriangleFlat(pivot, polygon->points[i], polygon->points[i - 1], color);
+	}
+}
+
+void drawPolygonFlat(const polygon_t *polygon, color_t color)
+{
+	// TODO
+	(void)polygon;
+	(void)color;
 }
