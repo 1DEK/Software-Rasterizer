@@ -150,18 +150,30 @@ void drawTriangleShaded(vec2 p1, uint32_t color1, vec2 p2, uint32_t color2, vec2
 		vec2 temp = p1;
 		p1 = p2;
 		p2 = temp;
+
+		color_t tempCol = color1;
+		color1 = color2;
+		color2 = tempCol;
 	}
 	if (p3.y < p2.y)
 	{
 		vec2 temp = p2;
 		p2 = p3;
 		p3 = temp;
+
+		color_t tempCol = color2;
+		color2 = color3;
+		color3 = tempCol;
 	}
 	if (p2.y < p1.y)
 	{
 		vec2 temp = p1;
 		p1 = p2;
 		p2 = temp;
+
+		color_t tempCol = color1;
+		color1 = color2;
+		color2 = tempCol;
 	}
 
 	// TODO these are floats, need to use a different way to compare probably, but IDK
@@ -171,12 +183,20 @@ void drawTriangleShaded(vec2 p1, uint32_t color1, vec2 p2, uint32_t color2, vec2
 		vec2 temp = p1;
 		p1 = p2;
 		p2 = temp;
+
+		color_t tempCol = color1;
+		color1 = color2;
+		color2 = tempCol;
 	}
 	else if (p2.y == p3.y && p2.x < p3.x)
 	{
 		vec2 temp = p2;
 		p2 = p3;
 		p3 = temp;
+
+		color_t tempCol = color2;
+		color2 = color3;
+		color3 = tempCol;
 	}
 
 	vec3 cross = vec2Cross(vec2Subtract(p2, p1), vec2Subtract(p3, p1));
