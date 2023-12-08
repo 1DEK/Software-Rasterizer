@@ -6,13 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/*
-	TODO
-
-	Remove canvas and fit everything into this file and make it mostly handled by SDL.
-	For example, won't need a color struct anymore and will just use uint32_t for that.
-*/
-
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
