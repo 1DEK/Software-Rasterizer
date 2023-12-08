@@ -144,11 +144,129 @@ void drawTriangleFlat(vec2 p1, vec2 p2, vec2 p3, uint32_t color)
 
 void drawTriangleShaded(vec2 p1, uint32_t color1, vec2 p2, uint32_t color2, vec2 p3, uint32_t color3)
 {
-	// TODO
-	(void)p1;
-	(void)color1;
-	(void)p2;
-	(void)color2;
-	(void)p3;
-	(void)color3;
+	// sort points by y-coordinate
+	if (p2.y < p1.y)
+	{
+		vec2 temp = p1;
+		p1 = p2;
+		p2 = temp;
+	}
+	if (p3.y < p2.y)
+	{
+		vec2 temp = p2;
+		p2 = p3;
+		p3 = temp;
+	}
+	if (p2.y < p1.y)
+	{
+		vec2 temp = p1;
+		p1 = p2;
+		p2 = temp;
+	}
+
+	// TODO these are floats, need to use a different way to compare probably, but IDK
+	// top left rule set up
+	if (p1.y == p2.y && p1.x < p2.x)
+	{
+		vec2 temp = p1;
+		p1 = p2;
+		p2 = temp;
+	}
+	else if (p2.y == p3.y && p2.x < p3.x)
+	{
+		vec2 temp = p2;
+		p2 = p3;
+		p3 = temp;
+	}
+
+	vec3 cross = vec2Cross(vec2Subtract(p2, p1), vec2Subtract(p3, p1));
+	float triangleArea = vec3Length(cross);
+	// p2 is on the left side
+	if (cross.z < 0.0)
+	{
+		float x0 = p1.x;
+		float x1 = p1.x;
+		float m0 = (p2.x - p1.x)/(p2.y - p1.y);
+		float m1 = (p3.x - p1.x)/(p3.y - p1.y);
+		for (int y = p1.y; y < p2.y; y++)
+		{
+			for (int x = x0; x < x1; x++)
+			{
+				vec2 p = (vec2){x, y};
+				vec2 p1_p = vec2Subtract(p, p1);
+				vec2 p2_p = vec2Subtract(p, p2);
+				vec2 p3_p = vec2Subtract(p, p3);
+				float alpha = vec3Length(vec2Cross(p2_p, p3_p))/triangleArea;
+				float beta = vec3Length(vec2Cross(p1_p, p3_p))/triangleArea;
+				float gamma = vec3Length(vec2Cross(p1_p, p2_p))/triangleArea;
+				color_t color = colorAdd(colorScale(color1, alpha), colorAdd(colorScale(color2, beta), colorScale(color3, gamma)));
+				putPixel(x, y, color);
+			}
+			x0 += m0;
+			x1 += m1;
+		}
+		x0 = p2.x;
+		m0 = (p3.x - p2.x)/(p3.y - p2.y);
+		for (int y = p2.y; y <= p3.y; y++)
+		{
+			for (int x = x0; x < x1; x++)
+			{
+				vec2 p = (vec2){x, y};
+				vec2 p1_p = vec2Subtract(p, p1);
+				vec2 p2_p = vec2Subtract(p, p2);
+				vec2 p3_p = vec2Subtract(p, p3);
+				float alpha = vec3Length(vec2Cross(p2_p, p3_p))/triangleArea;
+				float beta = vec3Length(vec2Cross(p1_p, p3_p))/triangleArea;
+				float gamma = vec3Length(vec2Cross(p1_p, p2_p))/triangleArea;
+				color_t color = colorAdd(colorScale(color1, alpha), colorAdd(colorScale(color2, beta), colorScale(color3, gamma)));
+				putPixel(x, y, color);
+			}
+			x0 += m0;
+			x1 += m1;
+		}
+	}
+	// p2 is on the right side
+	else
+	{
+		float x0 = p1.x;
+		float x1 = p1.x;
+		float m0 = (p3.x - p1.x)/(p3.y - p1.y);
+		float m1 = (p2.x - p1.x)/(p2.y - p1.y);
+		for (int y = p1.y; y < p2.y; y++)
+		{
+			for (int x = x0; x < x1; x++)
+			{
+				vec2 p = (vec2){x, y};
+				vec2 p1_p = vec2Subtract(p, p1);
+				vec2 p2_p = vec2Subtract(p, p2);
+				vec2 p3_p = vec2Subtract(p, p3);
+				float alpha = vec3Length(vec2Cross(p2_p, p3_p))/triangleArea;
+				float beta = vec3Length(vec2Cross(p1_p, p3_p))/triangleArea;
+				float gamma = vec3Length(vec2Cross(p1_p, p2_p))/triangleArea;
+				color_t color = colorAdd(colorScale(color1, alpha), colorAdd(colorScale(color2, beta), colorScale(color3, gamma)));
+				putPixel(x, y, color);
+			}
+			x0 += m0;
+			x1 += m1;
+		}
+		x1 = p2.x;
+		m1 = (p3.x - p2.x)/(p3.y - p2.y);
+		for (int y = p2.y; y <= p3.y; y++)
+		{
+			for (int x = x0; x < x1; x++)
+			{
+				vec2 p = (vec2){x, y};
+				vec2 p1_p = vec2Subtract(p, p1);
+				vec2 p2_p = vec2Subtract(p, p2);
+				vec2 p3_p = vec2Subtract(p, p3);
+				float alpha = vec3Length(vec2Cross(p2_p, p3_p))/triangleArea;
+				float beta = vec3Length(vec2Cross(p1_p, p3_p))/triangleArea;
+				float gamma = vec3Length(vec2Cross(p1_p, p2_p))/triangleArea;
+				color_t color = colorAdd(colorScale(color1, alpha), colorAdd(colorScale(color2, beta), colorScale(color3, gamma)));
+				putPixel(x, y, color);
+			}
+			x0 += m0;
+			x1 += m1;
+		}		
+	}
 }
