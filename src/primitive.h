@@ -3,6 +3,7 @@
 
 #include "render.h"
 #include "vector.h"
+#include "color.h"
 
 void drawLine(vec2 p1, vec2 p2, uint32_t color);
 void drawTriangleFrame(vec2 p1, vec2 p2, vec2 p3, uint32_t color);
